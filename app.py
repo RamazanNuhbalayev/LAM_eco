@@ -1,40 +1,31 @@
 import streamlit as st
-import base64
 import os
+from streamlit_pdf_viewer import pdf_viewer
 
-# Səhifəni tam ekran rejiminə keçiririk
-st.set_page_config(layout="wide", page_title="Mənim PDF Sənədim")
+# 1. Səhifə Ayarları
+st.set_page_config(
+    layout="wide", 
+    page_title="Sənəd Görüntüləyici"
+)
 
-# CSS ilə kənarları təmizləyirik (Sayt kimi görünsün)
+# Kənarları təmizləmək üçün CSS
 st.markdown("""
 <style>
     .block-container {
-        padding-top: 0rem;
+        padding-top: 1rem;
         padding-bottom: 0rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    iframe {
-        border: none;
+        padding-left: 0rem;
+        padding-right: 0rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Faylın Adı ---
-# PDF faylınızın adı dəqiq belə olmalıdır (və ya buranı dəyişin)
-FILE_NAME = "sened.pdf" 
+# 2. Faylın Adı
+FILE_NAME = "sened.pdf"
 
-def display_pdf(file_path):
-    # Faylı serverdən (qovluqdan) oxuyuruq
-    with open(file_path, "rb") as f:
-        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-    
-    # PDF-i Embed edirik
-    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}#toolbar=0" width="100%" height="1000px" type="application/pdf"></iframe>'
-    st.markdown(pdf_display, unsafe_allow_html=True)
-
-# Yoxlayırıq: Fayl yerindədirmi?
+# 3. PDF-i Göstərən Hissə
 if os.path.exists(FILE_NAME):
-    display_pdf(FILE_NAME)
+    # Bu kitabxana faylı birbaşa təhlükəsiz şəkildə açır
+    pdf_viewer(FILE_NAME, width=1000, height=1000) 
 else:
-    st.error(f"Xəta: '{FILE_NAME}' faylı tapılmadı! Zəhmət olmasa PDF faylını GitHub-a kodla birlikdə yüklədiyinizdən əmin olun.")
+    st.error(f"⚠️ Xəta: '{FILE_NAME}' faylı tapılmadı. Zəhmət olmasa GitHub-da 'app.py' ilə eyni yerdə 'sened.pdf' faylının olduğuna əmin olun.")
